@@ -37,7 +37,7 @@ npm install --production
 NODE_ENV=production node app
 ```
 
-## Plugins
+## Plugins slur slur slur
 
 Dillinger is currently extended with the following plugins.
 Instructions on how to use them in your own application are linked below.
