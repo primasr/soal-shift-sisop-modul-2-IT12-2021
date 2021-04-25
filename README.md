@@ -13,144 +13,185 @@ Poin-poin soal sebagai berikut:
 
 - A). Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg
 - B). Untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga :)
-- C). Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload serta
+- C). Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload
 - D).Memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan)
 - E). Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany)
 - F). Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip)
 
-## 1.A
-
-Dillinger requires [Node.js](https://nodejs.org/) v10+ to run.
-
-Install the dependencies and devDependencies and start the server.
-
+### Include Library
+Pertama, kita include library yang dibutuhkan terlebih dahulu
 ```sh
-cd dillinger
-npm i
-node app
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <fcntl.h>
+#include <errno.h>
+#include <unistd.h>
+#include <syslog.h>
+#include <string.h>
+#include <wait.h>
+#include <time.h>
 ```
 
-For production environments...
+
+### 1.A
+
+Dikarenakan Stevany sangat menyukai huruf Y, Steven ingin nama folder-foldernya adalah Musyik untuk mp3, Fylm untuk mp4, dan Pyoto untuk jpg
+
+Disini kami membuat tiga (3) method untuk melakukan tugasnya
 
 ```sh
-npm install --production
-NODE_ENV=production node app
+void makeFotoDir(){
+    char *argv[] = {"mkdir", "-p", "Pyoto", NULL};
+    execv("/bin/mkdir", argv);    
+}
+
+void makeMusikDir(){
+    char *argv[] = {"mkdir", "-p", "Musyik", NULL};
+    execv("/bin/mkdir", argv);    
+}
+
+void makeFilmDir(){
+    char *argv[] = {"mkdir", "-p", "Fylm", NULL};
+    execv("/bin/mkdir", argv);    
+}
 ```
 
-## Plugins slur slur slur
+### 1.B
 
-Dillinger is currently extended with the following plugins.
-Instructions on how to use them in your own application are linked below.
+Untuk musik Steven mendownloadnya dari link di bawah, film dari link di bawah lagi, dan foto dari link dibawah juga :)
 
-| Plugin | README |
-| ------ | ------ |
-| Dropbox | [plugins/dropbox/README.md][PlDb] |
-| GitHub | [plugins/github/README.md][PlGh] |
-| Google Drive | [plugins/googledrive/README.md][PlGd] |
-| OneDrive | [plugins/onedrive/README.md][PlOd] |
-| Medium | [plugins/medium/README.md][PlMe] |
-| Google Analytics | [plugins/googleanalytics/README.md][PlGa] |
-
-## Development
-
-Want to contribute? Great!
-
-Dillinger uses Gulp + Webpack for fast developing.
-Make a change in your file and instantaneously see your updates!
-
-Open your favorite Terminal and run these commands.
-
-First Tab:
+Disini kami membuat tiga (3) method untuk melakukan tugasnya. Untuk cara menggunakan wget dari google drive, telah disediakan pada Soal Shfit modul yang disediakan. Jadi, kita hanya perlu menggunakannya
 
 ```sh
-node app
+void getFoto() {
+    char *argv[] = {"wget","--no-check-certificate", "-q", "https://drive.google.com/uc?id=1FsrAzb9B5ixooGUs0dGiBr-rC7TS9wTD&export=download", "-O", "Foto_for_Stevany.zip", NULL};
+    execv("/usr/bin/wget", argv);
+}
+
+void getMusik() {
+    char *argv[] = {"wget","--no-check-certificate", "-q", "https://drive.google.com/uc?id=1ZG8nRBRPquhYXq_sISdsVcXx5VdEgi-J&export=download", "-O", "Musik_for_Stevany.zip", NULL};                    
+    execv("/usr/bin/wget", argv);
+}
+
+void getFilm() {
+    char *argv[] = {"wget","--no-check-certificate", "-q", "https://drive.google.com/uc?id=1ktjGgDkL0nNpY-vT7rT7O6ZI47Ke9xcp&export=download", "-O", "Film_for_Stevany.zip", NULL};                    
+    execv("/usr/bin/wget", argv);
+}
 ```
 
-Second Tab:
+### 1.C
+
+Steven tidak ingin isi folder yang dibuatnya berisikan zip, sehingga perlu meng-extract-nya setelah didownload
+
+Disini kita menggunakan tiga(3) method juga untuk melakukan proses unzip
 
 ```sh
-gulp watch
+void unzipFoto() {
+    char *argv[] = {"unzip", "-q", "Foto_for_Stevany.zip", NULL};
+    execv("/usr/bin/unzip", argv);
+}
+
+void unzipMusik() {
+    char *argv[] = {"unzip", "-q", "Musik_for_Stevany.zip", NULL};
+    execv("/usr/bin/unzip", argv);
+}
+
+void unzipFilm() {
+    char *argv[] = {"unzip", "-q", "Film_for_Stevany.zip", NULL};
+    execv("/usr/bin/unzip", argv);
+}
 ```
 
-(optional) Third:
+### 1.D
+
+Memindahkannya ke dalam folder yang telah dibuat (hanya file yang dimasukkan)
+
+Nah, sedikit tricky disini. Kami, mengakalinya dengan melakukan beberapa proses yaitu: hapus dulu folder yang telah dibuat. Lalu, kita memindahkan folder tersebut sekaligus me-rename nya seperti folder yang ada pada sebelumnya
 
 ```sh
-karma test
+void delFotoMusikfilmDir(){
+    char *argv[] = {"rm", "-r", "Pyoto", "Fylm", "Musyik", NULL};
+    execv("/bin/rm", argv);
+}
 ```
-
-#### Building for source
-
-For production release:
-
 ```sh
-gulp build --prod
+void MoveRenameFoto() {
+    char *argv[] = {"mv", "FOTO", "Pyoto", NULL};
+    execv("/bin/mv", argv); 
+}
+
+void MoveRenameMusik() {
+    char *argv[] = {"mv", "MUSIK", "Musyik", NULL};
+    execv("/bin/mv", argv); 
+}
+
+void MoveRenameFilm() {
+    char *argv[] = {"mv", "FILM", "Fylm", NULL};
+    execv("/bin/mv", argv);  
+}
 ```
 
-Generating pre-built zip archives for distribution:
+### 1.E
 
+Untuk memudahkan Steven, ia ingin semua hal di atas berjalan otomatis 6 jam sebelum waktu ulang tahun Stevany)
+
+Disini, kita menggunakan beberapa fungsi waktu(time) untuk melakukan trigger waktu ketika sudah memasuki waktu yang telah ditentukan (2021-04-09 16:21:59)
+
+
+Deklarasi variabel waktu nya
 ```sh
-gulp build dist --prod
+    char tanggal[100]; 
+    time_t rawDate;
+    struct tm *localDate;
 ```
 
-## Docker
-
-Dillinger is very easy to install and deploy in a Docker container.
-
-By default, the Docker will expose port 8080, so change this within the
-Dockerfile if necessary. When ready, simply use the Dockerfile to
-build the image.
-
+Penggunaan trigger waktunya ketika memasuki -6 jam sebelum jam ulang tahunnya
 ```sh
-cd dillinger
-docker build -t <youruser>/dillinger:${package.json.version} .
+        //trigger untuk sudo date
+        rawDate = time(NULL);
+        localDate = localtime(&rawDate);
+        strftime(tanggal, 50, "%Y-%m-%d %H:%M:%S", localDate);
+        if(strcmp(tanggal,"2021-04-09 16:22:00") == 0){
+            // task
+        }
 ```
 
-This will create the dillinger image and pull in the necessary dependencies.
-Be sure to swap out `${package.json.version}` with the actual
-version of Dillinger.
+## 1.F
 
-Once done, run the Docker image and map the port to whatever you wish on
-your host. In this example, we simply map port 8000 of the host to
-port 8080 of the Docker (or whatever port was exposed in the Dockerfile):
+Setelah itu pada waktu ulang tahunnya Stevany, semua folder akan di zip dengan nama Lopyu_Stevany.zip dan semua folder akan di delete(sehingga hanya menyisakan .zip)
 
+Penggunaan trigger waktunya ketika sudah memasuki jam ulang tahunnya
 ```sh
-docker run -d -p 8000:8080 --restart=always --cap-add=SYS_ADMIN --name=dillinger <youruser>/dillinger:${package.json.version}
+        //trigger date
+        rawDate = time(NULL);
+        localDate = localtime(&rawDate);
+        strftime(tanggal, 50, "%Y-%m-%d %H:%M:%S", localDate);
+        if(strcmp(tanggal,"2021-04-09 22:22:00") == 0){
+            // task
+        }
 ```
 
-> Note: `--capt-add=SYS-ADMIN` is required for PDF rendering.
-
-Verify the deployment by navigating to your server address in
-your preferred browser.
-
+Proses zipping semua folder yang diperlukan menjadi 1 file zip
 ```sh
-127.0.0.1:8000
+void zipAllDir() {
+    char *argv[] = {"zip", "-r", "Lopyu_Stevany.zip", "Pyoto", "Musyik", "Fylm", NULL};
+    execv("/usr/bin/zip", argv);
+}
 ```
 
-## License
+*Tambahan, sebelum dipanggil perintah ```deleteAnotherDir``` , perlu ditambahkan ```wait``` supaya tidak terjadi race condition (di zip dulu semua, baru hapus semua filenya)
+```sh
+        // tunggu proses diatas selesai, baru hapus semua
+        while ((wait(&status)) > 0);
+```
 
-MIT
 
-**Free Software, Hell Yeah!**
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
-
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
-
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+Proses deleting semua folder yang tidak diinginkan
+```sh
+void deleteAnotherDir() {
+    char *argv[] = {"rm", "-r", "FILM", "FOTO", "MUSIK", "Pyoto", "Fylm", "Musyik", NULL};
+    execv("/bin/rm", argv);
+}
+```
