@@ -4,8 +4,8 @@
 Kelompok IT 12 yang beranggotakan:
 
 - Prima Secondary Ramadhan  (05311940000001)
-- Shavica
-- Tata
+- Shavica Ihya Qurata Ayun L . (05311940000013)
+- Sri Puspita Dewi (05311940000045)
 
 ## Soal 1
 
